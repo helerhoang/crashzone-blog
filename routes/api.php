@@ -17,6 +17,9 @@
 //     return $request->user();
 // });
 
+
+Route::get('users', 'UsersController@index');
+
 Route::group([
     'prefix' => 'v1'
 ], function ($router) {
