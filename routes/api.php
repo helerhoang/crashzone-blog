@@ -30,16 +30,5 @@ Route::group([
         Route::get('users', 'UsersController@index');
     });
 });
-// Route::group([
 
-//     'middleware' => 'api',
-//     'prefix' => 'auth'
-
-// ], function ($router) {
-
-//     Route::post('login', 'AuthController@login');
-
-//     Route::post('me', 'AuthController@me');
-
-// });
 
