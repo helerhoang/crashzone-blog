@@ -23,14 +23,14 @@ return [
     | Note: This will be used for Symmetric algorithms only (HMAC),
     | since RSA and ECDSA use a private/public key combo (See below).
     |
-    */
+ */
 
     'secret' => env('JWT_SECRET'),
 
     /*
     |--------------------------------------------------------------------------
     | JWT Authentication Keys
-    |--------------------------------------------------------------------------
+    |----------------------------------11----------------------------------------
     |
     | The algorithm you are using, will determine whether your tokens are
     | signed with a random string (defined in `JWT_SECRET`) or using the
@@ -42,7 +42,7 @@ return [
     | Asymmetric Algorithms:
     | RS256, RS384 & RS512 / ES256, ES384 & ES512 will use the keys below.
     |
-    */
+     */
 
     'keys' => [
 
@@ -55,7 +55,7 @@ return [
         |
         | E.g. 'file://path/to/public/key'
         |
-        */
+     */
 
         'public' => env('JWT_PUBLIC_KEY'),
 
@@ -68,7 +68,7 @@ return [
         |
         | E.g. 'file://path/to/private/key'
         |
-        */
+         */
 
         'private' => env('JWT_PRIVATE_KEY'),
 
@@ -79,7 +79,7 @@ return [
         |
         | The passphrase for your private key. Can be null if none set.
         |
-        */
+         */
 
         'passphrase' => env('JWT_PASSPHRASE'),
 
@@ -98,7 +98,7 @@ return [
     | This is not particularly recommended, so make sure you have appropriate
     | systems in place to revoke the token if necessary.
     |
-    */
+     */
 
     'ttl' => env('JWT_TTL', 60),
 
@@ -117,7 +117,7 @@ return [
     | This is not particularly recommended, so make sure you have appropriate
     | systems in place to revoke the token if necessary.
     |
-    */
+     */
 
     'refresh_ttl' => env('JWT_REFRESH_TTL', 20160),
 
@@ -131,7 +131,7 @@ return [
     | See here: https://github.com/namshi/jose/tree/master/src/Namshi/JOSE/Signer/OpenSSL
     | for possible values.
     |
-    */
+     */
 
     'algo' => env('JWT_ALGO', 'HS256'),
 
@@ -144,7 +144,7 @@ return [
     | A TokenInvalidException will be thrown if any of these claims are not
     | present in the payload.
     |
-    */
+     */
 
     'required_claims' => [
         'iss',
@@ -166,48 +166,12 @@ return [
     |
     | Note: If a claim does not exist then it will be ignored.
     |
-    */
+     */
 
     'persistent_claims' => [
         // 'foo',
         // 'bar',
     ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Lock Subject
-    |--------------------------------------------------------------------------
-    |
-    | This will determine whether a `prv` claim is automatically added to
-    | the token. The purpose of this is to ensure that if you have multiple
-    | authentication models e.g. `App\User` & `App\OtherPerson`, then we
-    | should prevent one authentication request from impersonating another,
-    | if 2 tokens happen to have the same id across the 2 different models.
-    |
-    | Under specific circumstances, you may want to disable this behaviour
-    | e.g. if you only have one authentication model, then you would save
-    | a little on token size.
-    |
-    */
-
-    'lock_subject' => true,
-
-    /*
-    |--------------------------------------------------------------------------
-    | Leeway
-    |--------------------------------------------------------------------------
-    |
-    | This property gives the jwt timestamp claims some "leeway".
-    | Meaning that if you have any unavoidable slight clock skew on
-    | any of your servers then this will afford you some level of cushioning.
-    |
-    | This applies to the claims `iat`, `nbf` and `exp`.
-    |
-    | Specify in seconds - only if you know you need it.
-    |
-    */
-
-    'leeway' => env('JWT_LEEWAY', 0),
 
     /*
     |--------------------------------------------------------------------------
@@ -217,7 +181,7 @@ return [
     | In order to invalidate tokens, you must have the blacklist enabled.
     | If you do not want or need this functionality, then set this to false.
     |
-    */
+     */
 
     'blacklist_enabled' => env('JWT_BLACKLIST_ENABLED', true),
 
@@ -232,27 +196,9 @@ return [
     |
     | Set grace period in seconds to prevent parallel request failure.
     |
-    */
+     */
 
     'blacklist_grace_period' => env('JWT_BLACKLIST_GRACE_PERIOD', 0),
-
-    /*
-    |--------------------------------------------------------------------------
-    | Cookies encryption
-    |--------------------------------------------------------------------------
-    |
-    | By default Laravel encrypt cookies for security reason.
-    | If you decide to not decrypt cookies, you will have to configure Laravel
-    | to not encrypt your cookie token by adding its name into the $except
-    | array available in the middleware "EncryptCookies" provided by Laravel.
-    | see https://laravel.com/docs/master/responses#cookies-and-encryption
-    | for details.
-    |
-    | Set it to true if you want to decrypt cookies.
-    |
-    */
-
-    'decrypt_cookies' => false,
 
     /*
     |--------------------------------------------------------------------------
@@ -261,7 +207,7 @@ return [
     |
     | Specify the various providers used throughout the package.
     |
-    */
+     */
 
     'providers' => [
 
@@ -272,9 +218,9 @@ return [
         |
         | Specify the provider that is used to create and decode the tokens.
         |
-        */
+     */
 
-        'jwt' => Tymon\JWTAuth\Providers\JWT\Lcobucci::class,
+        'jwt' => Tymon\JWTAuth\Providers\JWT\Namshi::class,
 
         /*
         |--------------------------------------------------------------------------
@@ -283,7 +229,7 @@ return [
         |
         | Specify the provider that is used to authenticate users.
         |
-        */
+         */
 
         'auth' => Tymon\JWTAuth\Providers\Auth\Illuminate::class,
 
@@ -294,7 +240,7 @@ return [
         |
         | Specify the provider that is used to store tokens in the blacklist.
         |
-        */
+         */
 
         'storage' => Tymon\JWTAuth\Providers\Storage\Illuminate::class,
 

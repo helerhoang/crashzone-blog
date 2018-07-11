@@ -17,18 +17,38 @@
 //     return $request->user();
 // });
 
+// Route::group([
+//     'prefix' => 'v1'
+// ], function () {
+//     Route::post('login', 'Auth\AuthController@login')->name('login');
+//     Route::group([
+//         'middleware' => 'auth'
+//     ], function () {
+//         Route::post('me', 'Auth\AuthController@me');
+//         Route::post('logout', 'Auth\AuthController@logout');
+//         Route::post('refresh', 'Auth\AuthController@refresh');
+
+
+//         /**
+//          * USERS CONTROLLER
+//          */
+//         Route::get('users', 'UsersController@index');
+//         Route::delete('users/{id}', 'UsersController@destroy')->where(['id' => '[0-9]+']);
+//         // Route::resource('users', 'UsersController');
+//     });
+// });
+
 Route::group([
     'prefix' => 'v1'
-], function ($router) {
-    Route::post('login', 'AuthController@login');
-    Route::group([
-        'middleware' => 'auth:api'
-    ], function ($router) {
-        Route::post('me', 'AuthController@me');
-        Route::post('logout', 'AuthController@logout');
-        Route::post('refresh', 'AuthController@refresh');
-        Route::get('users', 'UsersController@index');
+], function () {
+    Route::post('login', 'Auth\AuthController@login');
+    Route::post('refresh', 'Auth\AuthController@refresh');
+    Route::group(['middleware' => 'auth'], function () {
+        Route::post('me', 'Auth\AuthController@me');
+        Route::post('logout', 'Auth\AuthController@logout');
+        Route::resource('user', 'UserController');
     });
 });
+
 
 

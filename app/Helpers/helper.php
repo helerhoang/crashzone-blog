@@ -86,27 +86,32 @@ r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\]
 ?:\r\n)?[ \t])*))*)?;\s*)';
 
 
-function response_success($data = [], $msg = 'everything is ok', $status = 200)
+function response_success($data = [], $msg = 'everything is ok', $status = 200, $note = 'custom response success')
 {
     return response(
         [
             'status' => $status,
             'statusText' => 'OK',
             'data' => $data,
-            'message' => $msg
-        ],
-        $status
+            'message' => $msg,
+            'note' => $note
+        ]
+
+
     );
 }
 
-function response_error($data = [], $msg = 'something went wrong', $status = 400)
+function response_error($data = [], $msg = 'something went wrong', $status = 400, $note = 'custom response error')
 {
-    return response([
-        'status' => $status,
-        'statusText' => 'ERROR',
-        'data' => $data,
-        'message' => $msg
-    ], $status);
+    return response(
+        [
+            'status' => $status,
+            'statusText' => 'ERROR',
+            'data' => $data,
+            'message' => $msg,
+            'note' => $note
+        ]
+    );
 }
 
 function auth_user()
