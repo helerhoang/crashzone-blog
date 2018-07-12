@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
-use Tymon\JWTAuth\Validators\Validator;
+
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -18,21 +19,10 @@ class UserController extends Controller
      */
     public function index()
     {
-
         $users = User::excludeMe()->get();
         return response_success([
             'users' => $users
         ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -43,7 +33,23 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $userInfo = $request->only(['name', 'email', 'password']);
+        $validator = Validator::make($userInfo, [
+            'name' => 'required|min:3',
+            'email' => 'required|unique:users|email',
+            'password' => 'required|min:5'
+        ]);
+
+        if ($validator->fails()) {
+            return response_error(['errors' => $validator->errors()]);
+        };
+
+
+        $new = User::create(['name' => $userInfo['name'], 'email' => $userInfo['email'], 'password' => bcrypt($userInfo['password'])]);
+
+        return response_success(['user' => $new]);
+
+
     }
 
     /**
@@ -53,17 +59,6 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show(Users $users)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Users  $users
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Users $users)
     {
         //
     }

@@ -22,7 +22,7 @@ Route::group([
     Route::group(['middleware' => 'auth'], function () {
         Route::post('me', 'Auth\AuthController@me');
         Route::post('logout', 'Auth\AuthController@logout');
-        Route::resource('user', 'UserController');
+        Route::apiResource('user', 'UserController');
     });
 });
 
