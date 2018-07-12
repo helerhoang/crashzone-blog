@@ -19,7 +19,7 @@ class UserController extends Controller
     public function index()
     {
 
-        $users = User::all();
+        $users = User::excludeMe()->get();
         return response_success([
             'users' => $users
         ]);

@@ -37,4 +37,9 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsToMany(Role::class);
     }
 
+    public function scopeExcludeMe($query)
+    {
+        return $query->where('id', '<>', auth()->user()->id);
+    }
+
 }
