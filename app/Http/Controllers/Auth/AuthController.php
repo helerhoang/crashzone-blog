@@ -1,11 +1,17 @@
 <?php
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Auth;
 
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use JWTAuth;
+use Tymon\JWTAuth\Exceptions\TokenBlacklistedException;
+
+
 
 class AuthController extends Controller
 {
+
     /**
      * Create a new AuthController instance.
      *
@@ -16,22 +22,22 @@ class AuthController extends Controller
     //     $this->middleware('auth:api', ['except' => ['login']]);
     // }
 
-    /**
-     * Get a JWT via given credentials.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function login()
+
+    public function login(Request $request)
     {
-        
-        $credentials = request(['email', 'password']);
-        
-        if (!$token = auth()->attempt($credentials)) {
-            return response_error([], 'Unauthorized', 401);
+        $credentials = $request->only('email', 'password'); // grab credentials from the request
+
+        try {
+            if (!$token = auth()->attempt($credentials)) { // attempt to verify the credentials and create a token for the user
+                return response_error([], 'Unauthorized', 401);;
+            }
+        } catch (JWTException $e) {
+            return response()->json(['error' => 'could_not_create_token'], 500); // something went wrong whilst attempting to encode the token
         }
 
         return response_success(['token' => $token]);
     }
+
 
     /**
      * Get the authenticated User.
@@ -40,7 +46,7 @@ class AuthController extends Controller
      */
     public function me()
     {
-        return response_success(['information' => auth()->user()]);
+        return response_success(['user' => auth()->user()]);
     }
 
     /**
@@ -63,7 +69,17 @@ class AuthController extends Controller
     public function refresh()
     {
 
-        return $this->respondWithToken(auth()->refresh());
+
+        if (!auth()->getToken()) {
+            return response_error([], 'Token not provided');
+        }
+
+        try {
+            $newToken = auth()->refresh();
+        } catch (TokenBlacklistedException $e) {
+            return response_error([], 'The token has been blacklisted');
+        }
+        return response_success(['token' => $newToken]);
     }
 
     /**

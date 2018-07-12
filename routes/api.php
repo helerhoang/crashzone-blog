@@ -13,25 +13,18 @@
 |
  */
 
-// Route::middleware('auth:api')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
-
-
-Route::get('users', 'UsersController@index');
 
 Route::group([
     'prefix' => 'v1'
-], function ($router) {
-    Route::post('login', 'AuthController@login');
-    Route::group([
-        'middleware' => 'auth:api'
-    ], function ($router) {
-        Route::post('me', 'AuthController@me');
-        Route::post('logout', 'AuthController@logout');
-        Route::post('refresh', 'AuthController@refresh');
-        Route::get('users', 'UsersController@index');
+], function () {
+    Route::post('login', 'Auth\AuthController@login');
+    Route::post('refresh', 'Auth\AuthController@refresh');
+    Route::group(['middleware' => 'auth'], function () {
+        Route::post('me', 'Auth\AuthController@me');
+        Route::post('logout', 'Auth\AuthController@logout');
+        Route::resource('user', 'UserController');
     });
 });
+
 
 

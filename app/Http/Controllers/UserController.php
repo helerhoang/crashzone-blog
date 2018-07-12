@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use Tymon\JWTAuth\Validators\Validator;
 
-class UsersController extends Controller
+class UserController extends Controller
 {
 
 
@@ -17,7 +18,7 @@ class UsersController extends Controller
      */
     public function index()
     {
-        //
+
         $users = User::all();
         return response_success([
             'users' => $users
@@ -85,8 +86,19 @@ class UsersController extends Controller
      * @param  \App\Users  $users
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Users $users)
+    public function destroy($id)
     {
         //
+
+        $user = User::find($id);
+        if ($user && $user->delete()) {
+            $users = User::all();
+            return response_success([
+                'users' => $users
+            ], 'deleted user id ' . $id);
+        }
+
+        return response_error([], 'can not find user id ' . $id, 401);
+
     }
 }
