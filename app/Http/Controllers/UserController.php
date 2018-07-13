@@ -45,9 +45,9 @@ class UserController extends Controller
         };
 
 
-        $new = User::create(['name' => $userInfo['name'], 'email' => $userInfo['email'], 'password' => bcrypt($userInfo['password'])]);
+        $newUser = User::create(['name' => $userInfo['name'], 'email' => $userInfo['email'], 'password' => bcrypt($userInfo['password'])]);
 
-        return response_success(['user' => $new]);
+        return response_success(['user' => $newUser]);
 
 
     }
@@ -70,9 +70,23 @@ class UserController extends Controller
      * @param  \App\Users  $users
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Users $users)
+    public function update(Request $request, User $user)
     {
-        //
+
+        $userInfo = $request->only(['name', 'password']);
+        $validator = Validator::make($userInfo, [
+            'name' => 'required|min:3',
+            'password' => 'required|min:5'
+        ]);
+
+        if ($validator->fails()) {
+            return response_error(['errors' => $validator->errors()]);
+        };
+
+
+        $userUpdate = $user->update(['name' => $userInfo['name'], 'password' => bcrypt($userInfo['password'])]);
+
+        return response_success(['user' => $userUpdate]);
     }
 
     /**
@@ -81,19 +95,12 @@ class UserController extends Controller
      * @param  \App\Users  $users
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(User $user)
     {
-        //
+        return $user->delete()
+            ? response_success(['user' => $user], 'deleted user id ' . $user->id)
+            : response_error([], 'can not find user id ' . $user->id, 401);
 
-        $user = User::find($id);
-        if ($user && $user->delete()) {
-            $users = User::all();
-            return response_success([
-                'users' => $users
-            ], 'deleted user id ' . $id);
-        }
-
-        return response_error([], 'can not find user id ' . $id, 401);
 
     }
 }
