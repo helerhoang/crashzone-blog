@@ -42,4 +42,8 @@ class User extends Authenticatable implements JWTSubject
         return $query->where('id', '<>', auth()->user()->id);
     }
 
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 }
