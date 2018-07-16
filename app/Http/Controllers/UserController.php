@@ -76,7 +76,7 @@ class UserController extends Controller
         $userInfo = $request->only(['name', 'password']);
         $validator = Validator::make($userInfo, [
             'name' => 'required|min:3',
-            'password' => 'required|min:5'
+            'password' => 'min:5'
         ]);
 
         if ($validator->fails()) {
@@ -84,9 +84,9 @@ class UserController extends Controller
         };
 
 
-        $userUpdate = $user->update(['name' => $userInfo['name'], 'password' => bcrypt($userInfo['password'])]);
+        $user->update(['name' => $userInfo['name'], 'password' => bcrypt($userInfo['password'])]);
 
-        return response_success(['user' => $userUpdate]);
+        return response_success(['user' => $user]);
     }
 
     /**

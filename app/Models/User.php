@@ -14,7 +14,7 @@ class User extends Authenticatable implements JWTSubject
     use SoftDeletes;
 
     protected $hidden = [
-        'password'
+        'password', 'deleted_at'
     ];
 
     protected $fillable = [

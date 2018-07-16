@@ -23,6 +23,7 @@ Route::group([
         Route::post('me', 'Auth\AuthController@me');
         Route::post('logout', 'Auth\AuthController@logout');
         Route::apiResource('user', 'UserController');
+        Route::apiResource('category', 'CategoryController');
     });
 });
 
