@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Category;
+use App\Models\Article;
 
-class CategoryController extends Controller
+class ArticleController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,9 +14,10 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::with('subCategories')->parentIdIsNull()->get();
+        //
+        $articles = Article::all();
 
-        return response_success(['categories' => $categories]);
+        return response_success(['articles' => $articles]);
     }
 
     /**
@@ -80,11 +81,8 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Category $category)
+    public function destroy($id)
     {
-        return $category->delete()
-            ? response_success(['category' => $category], 'deleted category id ' . $category->id)
-            : response_error([], 'can not find category id ' . $category->id, 401);
-
+        //
     }
 }

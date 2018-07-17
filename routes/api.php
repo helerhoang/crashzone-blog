@@ -24,6 +24,7 @@ Route::group([
         Route::post('logout', 'Auth\AuthController@logout');
         Route::apiResource('user', 'UserController');
         Route::apiResource('category', 'CategoryController');
+        Route::apiResource('article', 'ArticleController');
     });
 });
 
