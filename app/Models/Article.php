@@ -11,6 +11,12 @@ class Article extends Model
 
     protected $table = 'articles';
 
+    protected $fillable = ['title', 'title_seo', 'description', 'content'];
+
+    protected $hidden = [
+        'deleted_at'
+    ];
+
     public function categories()
     {
         return $this->belongsToMany(Category::class);
@@ -28,4 +34,6 @@ class Article extends Model
     {
         return $this->belongsToMany(Image::class);
     }
+
+
 }
