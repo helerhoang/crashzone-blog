@@ -2,8 +2,6 @@
 
 use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;
-use App\Models\User;
-use App\Models\Article;
 use App\Models\Comment;
 
 class CommentsTableSeeder extends Seeder

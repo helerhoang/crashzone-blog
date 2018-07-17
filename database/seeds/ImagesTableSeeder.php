@@ -1,0 +1,34 @@
+<?php
+
+use Illuminate\Database\Seeder;
+use App\Models\Image;
+use App\Models\Article;
+use Faker\Factory as Faker;
+
+class ImagesTableSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        $faker = Faker::create();
+
+        foreach (range(1,20) as $index) {
+            Image::create([
+                'name_image' => $faker->sentence(6),
+                'link' => $faker->imageUrl($width = 640, $height = 480)
+            ]);
+        }
+
+        $articles = Article::all();
+
+        Image::all()->each(function($images) use ($articles) {
+            $images->articles()->attach(
+                $articles->random(rand(1,20))->pluck('id')->toArray()
+            );
+        });
+    }
+}

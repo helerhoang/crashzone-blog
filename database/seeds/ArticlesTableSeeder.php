@@ -22,7 +22,6 @@ class ArticlesTableSeeder extends Seeder
                 'title_seo' => 'some-title-seo-' . $item,
                 'description' => $faker->paragraph(10),
                 'content' => $faker->paragraph(20),
-                'image' => $faker->imageUrl($width = 640, $height = 480)
             ]);
         }
         $articles = Article::all();
