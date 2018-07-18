@@ -29,12 +29,6 @@ class UsersTableSeeder extends Seeder
             ]);
 
         }
-        $roles = Role::all();
-        User::all()->each(function ($user) use ($roles) {
-            $user->roles()->attach(
-                $roles->random(rand(1, 2))->pluck('id')->toArray()
-            );
-        });
 
     }
 }

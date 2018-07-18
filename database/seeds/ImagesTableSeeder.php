@@ -23,12 +23,6 @@ class ImagesTableSeeder extends Seeder
             ]);
         }
 
-        $articles = Article::all();
 
-        Image::all()->each(function($images) use ($articles) {
-            $images->articles()->attach(
-                $articles->random(rand(1,20))->pluck('id')->toArray()
-            );
-        });
     }
 }
