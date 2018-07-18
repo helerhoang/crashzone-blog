@@ -17,7 +17,10 @@ class DatabaseSeeder extends Seeder
             CategoriesTableSeeder::class,
             ArticlesTableSeeder::class,
             CommentsTableSeeder::class,
-            ImagesTableSeeder::class
+            ImagesTableSeeder::class,
+            RoleUserTableSeeder::class,
+            ArticleCategoryTableSeeder::class,
+            ArticleImageTableSeeder::class
         ]);
     }
 }
