@@ -26,7 +26,14 @@ Route::group([
         Route::apiResource('category', 'CategoryController');
         Route::apiResource('article', 'ArticleController');
     });
+    Route::group([
+        'prefix' => 'public'
+    ], function () {
+        Route::apiResource('category', 'CategoryController');
+    });
 });
+
+
 
 
 

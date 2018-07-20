@@ -15,7 +15,7 @@ class CategoriesTableSeeder extends Seeder
         $categories = [
             ['parent_id'=> null,'name' => 'Home'],
             ['parent_id'=> null,'name' => 'Blog'],
-            ['parent_id'=> null,'name' => 'Contact Us'],
+            ['parent_id'=> null,'name' => 'Contact'],
             ['parent_id'=> null,'name' => 'Forums'],
             ['parent_id'=> null,'name' => 'Help'],
             ['parent_id' => '2','name' => 'Sports Car'],
