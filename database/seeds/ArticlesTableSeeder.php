@@ -21,15 +21,15 @@ class ArticlesTableSeeder extends Seeder
                 'title' => $faker->sentence($nbWords = 6, $variableNbWords = true),
                 'title_seo' => 'some-title-seo-' . $item,
                 'description' => $faker->paragraph(10),
-                'content' => $faker->paragraph(20),
+                'content' => $faker->randomHtml(4, 5),
             ]);
         }
-        $articles = Article::all();
-        Category::find(range(6, 10))->each(function ($categories) use ($articles) {
-            $categories->articles()->attach(
-                $articles->random(rand(1, 6))->pluck('id')->toArray()
-            );
-        });
+        // $articles = Article::all();
+        // Category::find(range(6, 10))->each(function ($categories) use ($articles) {
+        //     $categories->articles()->attach(
+        //         $articles->random(rand(1, 6))->pluck('id')->toArray()
+        //     );
+        // });
 
     }
 }

@@ -16,13 +16,12 @@ class ImagesTableSeeder extends Seeder
     {
         $faker = Faker::create();
 
-        foreach (range(1,20) as $index) {
+        foreach (range(1, 20) as $index) {
             Image::create([
                 'name_image' => $faker->sentence(6),
                 'link' => $faker->imageUrl($width = 640, $height = 480)
             ]);
         }
-
 
     }
 }

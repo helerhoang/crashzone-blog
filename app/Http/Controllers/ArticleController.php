@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Article;
+use Illuminate\Support\Facades\Validator;
 
 class ArticleController extends Controller
 {
@@ -15,20 +16,11 @@ class ArticleController extends Controller
     public function index()
     {
         //
-        $articles = Article::all();
+        $articles = Article::with('images')->take(3)->get();
 
         return response_success(['articles' => $articles]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -38,7 +30,25 @@ class ArticleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $articleInfo = $request->only(['title', 'description', 'content']);
+        $validator = Validator::make($articleInfo, [
+            'title' => 'required|min:3|unique:articles',
+            'description' => 'required',
+            'content' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return response_error(['errors' => $validator->errors()]);
+        };
+
+        $title = trim($articleInfo['title']);
+        $title_seo = str_replace(' ', '-', strtolower(friendlyString($title)));
+        $description = trim($articleInfo['description']);
+        $content = trim($articleInfo['content']);
+
+        $newArticle = Article::create(['title' => $title, 'title_seo' => $title_seo, 'description' => $description, 'content' => $content]);
+
+        return response_success(['article' => $newArticle]);
     }
 
     /**
@@ -81,8 +91,10 @@ class ArticleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Article $article)
     {
-        //
+        return $article->delete()
+            ? response_success(['article' => $article], 'deleted article id ' . $article->id)
+            : response_error([], 'can not find article id ' . $article->id, 401);
     }
 }
