@@ -19,6 +19,7 @@ class CreateArticlesTable extends Migration
             $table->string('title_seo')->unique();
             $table->text('description');
             $table->text('content');
+            $table->integer('user_id');
             $table->timestamps();
             $table->softDeletes();
         });

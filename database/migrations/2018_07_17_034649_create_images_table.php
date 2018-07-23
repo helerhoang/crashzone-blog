@@ -16,6 +16,7 @@ class CreateImagesTable extends Migration
         Schema::create('images', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name_image');
+            $table->string('name_image_seo');
             $table->text('link');
             $table->timestamps();
             $table->softDeletes();
