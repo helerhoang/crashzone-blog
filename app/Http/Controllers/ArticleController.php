@@ -16,7 +16,7 @@ class ArticleController extends Controller
     public function index()
     {
         //
-        $articles = Article::with('images')->get();
+        $articles = Article::with('images')->take(3)->get();
 
         return response_success(['articles' => $articles]);
     }

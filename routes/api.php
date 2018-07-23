@@ -30,6 +30,7 @@ Route::group([
         'prefix' => 'public'
     ], function () {
         Route::apiResource('category', 'CategoryController');
+        Route::apiResource('article', 'ArticleController');
     });
 });
 
