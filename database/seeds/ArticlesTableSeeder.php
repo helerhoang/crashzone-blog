@@ -4,6 +4,7 @@ use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;
 use App\Models\Article;
 use App\Models\Category;
+use App\Models\User;
 
 class ArticlesTableSeeder extends Seeder
 {
@@ -16,20 +17,18 @@ class ArticlesTableSeeder extends Seeder
     {
         $faker = Faker::create();
 
+        $users = User::all();
+        $array_id = $users->pluck('id')->toArray();
+        $first_id = array_first($array_id);
+        $last_id = array_last($array_id);
         foreach (range(0, 20) as $item) {
             Article::create([
                 'title' => $faker->sentence($nbWords = 6, $variableNbWords = true),
                 'title_seo' => 'some-title-seo-' . $item,
+                'user_id' => rand($first_id, $last_id),
                 'description' => $faker->paragraph(10),
                 'content' => $faker->randomHtml(4, 5),
             ]);
         }
-        // $articles = Article::all();
-        // Category::find(range(6, 10))->each(function ($categories) use ($articles) {
-        //     $categories->articles()->attach(
-        //         $articles->random(rand(1, 6))->pluck('id')->toArray()
-        //     );
-        // });
-
     }
 }

@@ -20,7 +20,8 @@ class DatabaseSeeder extends Seeder
             ImagesTableSeeder::class,
             RoleUserTableSeeder::class,
             ArticleCategoryTableSeeder::class,
-            ArticleImageTableSeeder::class
+            ArticleImageTableSeeder::class,
+            MenusTableSeeder::class,
         ]);
     }
 }
