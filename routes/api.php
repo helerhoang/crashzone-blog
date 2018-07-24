@@ -25,12 +25,14 @@ Route::group([
         Route::apiResource('user', 'UserController');
         Route::apiResource('category', 'CategoryController');
         Route::apiResource('article', 'ArticleController');
+        Route::apiResource('image', 'ImageController');
     });
     Route::group([
         'prefix' => 'public'
     ], function () {
         Route::apiResource('category', 'CategoryController');
         Route::apiResource('article', 'ArticleController');
+        Route::apiResource('menu', 'MenuController');
     });
 });
 

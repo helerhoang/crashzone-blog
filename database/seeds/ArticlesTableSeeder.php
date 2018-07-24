@@ -24,10 +24,10 @@ class ArticlesTableSeeder extends Seeder
         foreach (range(0, 20) as $item) {
             Article::create([
                 'title' => $faker->sentence($nbWords = 6, $variableNbWords = true),
-                'title_seo' => 'some-title-seo-' . $item,
+                'slug' => 'slug-' . $item,
                 'user_id' => rand($first_id, $last_id),
                 'description' => $faker->paragraph(10),
-                'content' => $faker->randomHtml(4, 5),
+                'content' => $faker->randomHtml(1, 2),
             ]);
         }
     }

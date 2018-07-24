@@ -13,15 +13,15 @@ class MenusTableSeeder extends Seeder
     public function run()
     {
         $menus = [
-            ['name_menu' => 'Home'],
-            ['name_menu' => 'Blog'],
-            ['name_menu' => 'Contact'],
-            ['name_menu' => 'Forums'],
-            ['name_menu' => 'Help'],
+            ['name' => 'Home', 'slug' => 'home'],
+            ['name' => 'Blog', 'slug' => 'blog'],
+            ['name' => 'Contact', 'slug' => 'contact'],
+            ['name' => 'Forums', 'slug' => 'forums'],
+            ['name' => 'Help', 'slug' => 'help'],
 
 
         ];
-        foreach($menus as $menu) {
+        foreach ($menus as $menu) {
             Menu::create($menu);
         }
     }

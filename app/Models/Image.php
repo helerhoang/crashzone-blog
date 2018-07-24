@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Image extends Model
 {
-    protected  $table = 'images';
+    protected $table = 'images';
 
     public function articles()
     {
-        return $this->belongsToMany(Article::class);
+        return $this->belongsToMany(Article::class)->withTimestamps();
     }
 }

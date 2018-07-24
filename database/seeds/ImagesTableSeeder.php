@@ -18,8 +18,8 @@ class ImagesTableSeeder extends Seeder
 
         foreach (range(1, 20) as $index) {
             Image::create([
-                'name_image' => $faker->sentence(6),
-                'name_image_seo' => 'image-name-seo-'. $index,
+                'name' => $faker->sentence(6),
+                'slug' => 'slug-' . $index,
                 'link' => $faker->imageUrl($width = 640, $height = 480)
             ]);
         }

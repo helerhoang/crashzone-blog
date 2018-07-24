@@ -16,7 +16,7 @@ class ArticleCategoryTableSeeder extends Seeder
         $articles = Article::all();
         Category::find(range(6, 10))->each(function ($categories) use ($articles) {
             $categories->articles()->attach(
-                $articles->random(rand(1, 6))->pluck('id')->toArray()
+                $articles->random(rand(1, 6))->pluck('id')
             );
         });
     }

@@ -16,7 +16,7 @@ class ArticleController extends Controller
     public function index()
     {
         //
-        $articles = Article::with('images')->take(3)->get();
+        $articles = Article::with('author', 'images')->take(5)->get();
 
         return response_success(['articles' => $articles]);
     }
@@ -57,9 +57,12 @@ class ArticleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($slug)
     {
         //
+        $article = Article::where('slug', $slug)->first();
+
+        return response_success(['article' => $article]);
     }
 
     /**
