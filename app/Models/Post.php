@@ -5,13 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Article extends Model
+class Post extends Model
 {
     use SoftDeletes;
 
-    protected $table = 'articles';
+    protected $table = 'posts';
 
-    protected $fillable = ['title', 'title_seo', 'description', 'content'];
+    protected $fillable = ['title', 'slug', 'description', 'content'];
 
     protected $hidden = [
         'deleted_at'
@@ -32,7 +32,7 @@ class Article extends Model
     }
     public function images()
     {
-        return $this->belongsToMany(Image::class);
+        return $this->belongsToMany(Image::class)->withTimestamps();
     }
 
 

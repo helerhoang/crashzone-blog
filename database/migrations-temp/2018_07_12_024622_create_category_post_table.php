@@ -13,10 +13,10 @@ class CreateArticleCategoryTable extends Migration
      */
     public function up()
     {
-        Schema::create('article_category', function (Blueprint $table) {
+        Schema::create('category_post', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('category_id');
-            $table->integer('article_id');
+            $table->integer('post_id');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -29,6 +29,6 @@ class CreateArticleCategoryTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('article_category');
+        Schema::dropIfExists('post_category');
     }
 }

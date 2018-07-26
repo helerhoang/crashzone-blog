@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Image extends Model
 {
     protected $table = 'images';
-
-    public function articles()
+    protected $fillable = ['name', 'alt', 'slug', 'path', 'extension', 'mime_type', 'size'];
+    public function posts()
     {
-        return $this->belongsToMany(Article::class)->withTimestamps();
+        return $this->belongsToMany(Post::class)->withTimestamps();
     }
 }

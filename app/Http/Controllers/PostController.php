@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Article;
+use App\Models\Post;
 use Illuminate\Support\Facades\Validator;
 
-class ArticleController extends Controller
+class PostController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,10 +15,11 @@ class ArticleController extends Controller
      */
     public function index()
     {
-        //
-        $articles = Article::with('author', 'images')->take(5)->get();
+        $take = 5;
+        $offset = 0;
+        $posts = Post::with('author', 'images')->latest()->take($take)->offset($offset)->get();
 
-        return response_success(['articles' => $articles]);
+        return response_success(['posts' => $posts]);
     }
 
 
@@ -30,9 +31,9 @@ class ArticleController extends Controller
      */
     public function store(Request $request)
     {
-        $articleInfo = $request->only(['title', 'description', 'content']);
-        $validator = Validator::make($articleInfo, [
-            'title' => 'required|min:3|unique:articles',
+        $postInfo = $request->only(['title', 'description', 'content']);
+        $validator = Validator::make($postInfo, [
+            'title' => 'required|min:3|unique:posts',
             'description' => 'required',
             'content' => 'required'
         ]);
@@ -41,14 +42,14 @@ class ArticleController extends Controller
             return response_error(['errors' => $validator->errors()]);
         };
 
-        $title = trim($articleInfo['title']);
+        $title = trim($postInfo['title']);
         $title_seo = str_replace(' ', '-', strtolower(friendlyString($title)));
-        $description = trim($articleInfo['description']);
-        $content = trim($articleInfo['content']);
+        $description = trim($postInfo['description']);
+        $content = trim($postInfo['content']);
 
-        $newArticle = Article::create(['title' => $title, 'title_seo' => $title_seo, 'description' => $description, 'content' => $content]);
+        $newPost = Post::create(['title' => $title, 'title_seo' => $title_seo, 'description' => $description, 'content' => $content]);
 
-        return response_success(['article' => $newArticle]);
+        return response_success(['post' => $newPost]);
     }
 
     /**
@@ -60,9 +61,9 @@ class ArticleController extends Controller
     public function show($slug)
     {
         //
-        $article = Article::where('slug', $slug)->first();
+        $post = Post::where('slug', $slug)->first();
 
-        return response_success(['article' => $article]);
+        return response_success(['post' => $post]);
     }
 
     /**
@@ -94,10 +95,10 @@ class ArticleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Article $article)
+    public function destroy(Post $post)
     {
-        return $article->delete()
-            ? response_success(['article' => $article], 'deleted article id ' . $article->id)
-            : response_error([], 'can not find article id ' . $article->id, 401);
+        return $post->delete()
+            ? response_success(['post' => $post], 'deleted post id ' . $post->id)
+            : response_error([], 'can not find post id ' . $post->id, 401);
     }
 }

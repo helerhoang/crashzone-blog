@@ -21,14 +21,14 @@ class UsersTableSeeder extends Seeder
             'password' => bcrypt('123456')
         ]);
 
-        foreach (range(0, 10) as $index) {
-            User::create([
-                'name' => $faker->name,
-                'email' => $faker->unique()->safeEmail,
-                'password' => bcrypt('123456')
-            ]);
+        // foreach (range(0, 10) as $index) {
+        //     User::create([
+        //         'name' => $faker->name,
+        //         'email' => $faker->unique()->safeEmail,
+        //         'password' => bcrypt('123456')
+        //     ]);
 
-        }
+        // }
 
     }
 }

@@ -22,18 +22,16 @@ Route::group([
     Route::group(['middleware' => 'auth'], function () {
         Route::post('me', 'Auth\AuthController@me');
         Route::post('logout', 'Auth\AuthController@logout');
-        Route::apiResource('user', 'UserController');
-        Route::apiResource('category', 'CategoryController');
-        Route::apiResource('article', 'ArticleController');
-        Route::apiResource('image', 'ImageController');
+        // Route::apiResource('users', 'UserController');
+        // Route::apiResource('categories', 'CategoryController');
+        // Route::apiResource('posts', 'PostController');
+        // Route::apiResource('images', 'ImageController');
     });
-    Route::group([
-        'prefix' => 'public'
-    ], function () {
-        Route::apiResource('category', 'CategoryController');
-        Route::apiResource('article', 'ArticleController');
-        Route::apiResource('menu', 'MenuController');
-    });
+
+    Route::apiResource('categories', 'CategoryController');
+    Route::apiResource('posts', 'PostController');
+    Route::apiResource('menus', 'MenuController');
+
 });
 
 

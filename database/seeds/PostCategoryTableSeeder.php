@@ -4,7 +4,7 @@ use Illuminate\Database\Seeder;
 use App\Models\Article;
 use App\Models\Category;
 
-class ArticleCategoryTableSeeder extends Seeder
+class CategoryPostTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -16,7 +16,7 @@ class ArticleCategoryTableSeeder extends Seeder
         $articles = Article::all();
         Category::find(range(6, 10))->each(function ($categories) use ($articles) {
             $categories->articles()->attach(
-                $articles->random(rand(1, 6))->pluck('id')
+                $articles->random(rand(1, 5))->pluck('id')
             );
         });
     }

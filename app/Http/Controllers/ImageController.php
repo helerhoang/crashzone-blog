@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\File;
 use Illuminate\Support\Carbon;
 use Faker\Factory as Faker;
+use App\Models\Image;
+use Validator;
 
 class ImageController extends Controller
 {
@@ -39,19 +41,36 @@ class ImageController extends Controller
      */
     public function store(Request $request)
     {
-        $faker = Faker::create();
-        $image = $request->file('image');
 
-        $fileName = date('Ymd') . '-' . time() * 1000 . '-' . $faker->regexify('[A-Za-z]{10}') . '-' . $image->getClientOriginalName();
+        $validator = Validator::make($request->only(['image']), [
+            'image' => 'required|image'
+        ]);
 
-        //storage_path('app')
-        $storeImage = Storage::disk('local')->putFileAs('public/' . date('Ymd'), new File($image), $fileName);
-        // dd($storeImage);
-        // $content = Storage::url($storeImage);
-        // dd($content);
+        if ($validator->fails()) {
+            return response_error([
+                'errors' => $validator->errors()
+            ]);
+        };
+
+        $file = $request->file('image');
+        $image = imageInformation($file);
+
+        $imageSaved = Storage::disk('local')->putFileAs(imageDirectory(), new File($file), $image['encoded_name'] . '.' . $image['extension']);
+
+        $imagePath = Storage::url($imageSaved);
+
+        $imageStored = Image::create([
+            'name' => $image['name'],
+            'alt' => $image['alt'],
+            'slug' => $image['slug'],
+            'path' => $imagePath,
+            'extension' => $image['extension'],
+            'mime_type' => $image['mime_type'],
+            'size' => $image['size']
+        ]);
+
         return response_success([
-            'imageLink' => 'storage/' . $storeImage,
-
+            'image' => $imageStored,
         ]);
     }
 

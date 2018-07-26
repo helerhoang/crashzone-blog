@@ -15,12 +15,12 @@ class DatabaseSeeder extends Seeder
             RolesTableSeeder::class,
             UsersTableSeeder::class,
             CategoriesTableSeeder::class,
-            ArticlesTableSeeder::class,
-            CommentsTableSeeder::class,
+            // PostsTableSeeder::class,
+        //     CommentsTableSeeder::class,
             ImagesTableSeeder::class,
-            RoleUserTableSeeder::class,
-            ArticleCategoryTableSeeder::class,
-            ArticleImageTableSeeder::class,
+        //     RoleUserTableSeeder::class,
+        //     ArticleCategoryTableSeeder::class,
+            ImagePostTableSeeder::class,
             MenusTableSeeder::class,
         ]);
     }
