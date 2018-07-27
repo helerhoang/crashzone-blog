@@ -17,4 +17,17 @@ and post_name <> ''
 and post_status = 'publish'
 and ping_status = 'open';
 
+select *
+from crashzonenew.wp_posts
+where post_type = 'post' 
+and post_content is not null 
+and post_content <> '' 
+and post_title is not null 
+and post_title <> ''
+and post_name is not null 
+and post_name <> ''
+and post_status = 'publish'
+and ping_status = 'open'
+order by id desc;
+
 select * from crashzonenew.wp_posts where post_type = 'post';

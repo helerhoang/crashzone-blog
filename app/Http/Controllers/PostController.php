@@ -17,7 +17,7 @@ class PostController extends Controller
     {
         $take = 5;
         $offset = 0;
-        $posts = Post::with('author', 'images')->latest()->take($take)->offset($offset)->get();
+        $posts = Post::with('author', 'images')->latest()->take(20)->offset($offset)->get();
 
         return response_success(['posts' => $posts]);
     }

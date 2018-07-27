@@ -16,6 +16,10 @@ class Category extends Model
         'deleted_at'
     ];
 
+    protected $fillable = [
+        'name'
+    ];
+
     public function articles()
     {
         return $this->belongsToMany(Article::class)->withTimestamps();

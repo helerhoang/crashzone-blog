@@ -43,7 +43,7 @@ class ImageController extends Controller
     {
 
         $validator = Validator::make($request->only(['image']), [
-            'image' => 'required|image'
+            'image' => 'required'
         ]);
 
         if ($validator->fails()) {

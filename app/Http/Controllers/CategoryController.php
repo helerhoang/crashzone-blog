@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Category;
+use Validator;
 
 class CategoryController extends Controller
 {
@@ -38,6 +39,25 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         //
+        $validator = Validator::make($request->only(['name']), [
+            'name' => 'required|min:3'
+        ]);
+
+        if ($validator->fails()) {
+            return response_error([
+                'errors' => $validator->errors()
+            ]);
+        }
+
+        $name = ucfirst($request->name);
+
+        $category = Category::create([
+            'name' => $name
+        ]);
+
+        return response_success([
+            'category' => $category
+        ]);
     }
 
     /**

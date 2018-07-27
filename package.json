@@ -17,5 +17,9 @@
         "laravel-mix": "^1.0",
         "lodash": "^4.17.4",
         "vue": "^2.5.7"
+    },
+    "dependencies": {
+        "draft-js": "^0.10.5",
+        "react-draft-wysiwyg": "^1.12.13"
     }
 }

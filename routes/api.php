@@ -22,15 +22,12 @@ Route::group([
     Route::group(['middleware' => 'auth'], function () {
         Route::post('me', 'Auth\AuthController@me');
         Route::post('logout', 'Auth\AuthController@logout');
-        // Route::apiResource('users', 'UserController');
-        // Route::apiResource('categories', 'CategoryController');
-        // Route::apiResource('posts', 'PostController');
-        // Route::apiResource('images', 'ImageController');
     });
-
+    Route::apiResource('users', 'UserController');
     Route::apiResource('categories', 'CategoryController');
     Route::apiResource('posts', 'PostController');
     Route::apiResource('menus', 'MenuController');
+    Route::apiResource('images', 'ImageController');
 
 });
 
