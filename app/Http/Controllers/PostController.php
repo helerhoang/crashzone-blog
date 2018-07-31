@@ -111,54 +111,42 @@ class PostController extends Controller
      * api/v1/download-image | GET
      */
     public function downloadImageFormPost() {
-//        $contents =\Illuminate\Support\Facades\DB::table('wp_posts')->select('post_content','id')
-//            ->where('post_type','=','post')
-//            ->WhereNotNull('post_content')
-//            ->where('post_content','<>','')
-//            ->WhereNotNull('post_title')
-//            ->where('post_title','<>','')
-//            ->WhereNotNull('post_name')
-//            ->where('post_name','<>','')
-//            ->where('post_status','publish')
-//            ->where('ping_status','open')
-//            ->orderBy('id','desc')
-////            ->skip(159)
-//            ->take(81)
-//            ->get();
-
-            $contents = Post::select('id','content')->skip(0)->take(80)->get();
-//            dd($contents);
-        foreach($contents as $key =>  $content) {
-            $id_post = $content->id;
-            $url = getSrcImage($content);
-            try {
-                if ($url[$key] === "") {
-                    unset($url[$key]);
+        $count_content = Post::select('*')->count();
+        for($i = 0; $i <= $count_content; $i++ ) {
+            $contents = Post::select('id','content')->skip($i)->take(1)->get();
+            foreach($contents as $key =>  $content) {
+                $id_post = $content->id;
+                $url = getSrcImage($content);
+                try {
+                    if ($url[$key] === "") {
+                        unset($url[$key]);
+                        continue;
+                    }
+                }catch (\ErrorException $e){
                     continue;
                 }
-            }catch (\ErrorException $e){
-                continue;
-            }
-            try {
-                $nameSaved =$id_post . "_" . getNameImage($url);
-//                    $path = storage_path('app/public/old_images/' . $nameSaved);
-                $path = storage_path('app/public/images_of_content/' . $nameSaved);
-                $file_path = fopen($path, 'w');
-                $client = new Client();
-                if($client->head($url)) {
-                    $client->get($url, ['save_to' => $file_path]);
+                try {
+                    $nameSaved =$id_post . "_" . getNameImage($url);
+                    $path = storage_path('app/public/images_of_content/' . $nameSaved);
+                    $file_path = fopen($path, 'w');
+                    $client = new Client();
+                    if($client->head($url)) {
+                        $client->get($url, ['save_to' => $file_path]);
+                    }
+
+                } catch (ClientException $e) {
+                    continue;
+                }
+                catch (ConnectException $e) {
+                    continue;
+                }
+                catch (NotFoundHttpException $e){
+                    continue;
                 }
 
-            } catch (ClientException $e) {
-                continue;
             }
-            catch (ConnectException $e) {
-                continue;
-            }
-            catch (NotFoundHttpException $e){
-                continue;
-            }
-
         }
+
+
     }
 }
