@@ -24,10 +24,17 @@ Route::group([
         Route::post('logout', 'Auth\AuthController@logout');
     });
     Route::apiResource('users', 'UserController');
-    Route::apiResource('categories', 'CategoryController');
+
     Route::apiResource('posts', 'PostController');
     Route::apiResource('menus', 'MenuController');
     Route::apiResource('images', 'ImageController');
+    /*
+     * CATEGORY
+     */
+    Route::apiResource('categories', 'CategoryController');
+    Route::get('categories-deleted', 'CategoryController@indexDeleted')->name('categories.indexDeleted');
+    Route::delete('categories-deleted/{id}', 'CategoryController@destroyDeleted')->name('categories.destroyDeleted');
+    Route::put('categories-deleted/{id}', 'CategoryController@restoreDeleted')->name('categories.restoreDeleted');
 
 });
 

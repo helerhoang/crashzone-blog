@@ -20,14 +20,10 @@ class CategoryController extends Controller
         return response_success(['categories' => $categories]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function indexDeleted()
     {
-        //
+        $categories = Category::onlyTrashed()->get();
+        return response_success(['categories' => $categories]);
     }
 
     /**
@@ -39,17 +35,10 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         //
-        $validator = Validator::make($request->only(['name']), [
-            'name' => 'required|min:3'
-        ]);
 
-        if ($validator->fails()) {
-            return response_error([
-                'errors' => $validator->errors()
-            ]);
-        }
+        $this->validateCategory($request);
 
-        $name = ucfirst($request->name);
+        $name = $request->name;
 
         $category = Category::create([
             'name' => $name
@@ -77,10 +66,7 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
-        //
-    }
+
 
     /**
      * Update the specified resource in storage.
@@ -89,9 +75,21 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Category $category)
     {
         //
+        $this->validateCategory($request);
+
+        $category->name = $request->name;
+        $category->save();
+        return response_success(['category' => $category]);
+    }
+
+    public function restoreDeleted($id)
+    {
+        $category = Category::withTrashed()->find($id);
+        return $category->restore() ?
+            response_success(['category' => $category], 'retore deleted category id ' . $category->id) : response_error([], 'can not find category id ' . $category->id, 401);
     }
 
     /**
@@ -102,9 +100,35 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
+
         return $category->delete()
             ? response_success(['category' => $category], 'deleted category id ' . $category->id)
             : response_error([], 'can not find category id ' . $category->id, 401);
-
     }
+
+    public function destroyDeleted($id)
+    {
+        $category = Category::withTrashed()->find($id);
+        return $category->forceDelete() ?
+            response_success(['category' => $category], 'deleted permanently category id ' . $category->id) : response_error([], 'can not find category id ' . $category->id, 401);
+    }
+
+
+    public function validateCategory($request)
+    {
+        $validator = Validator::make($request->only(['name']), [
+            'name' => 'required|min:3|unique:categories'
+        ]);
+
+        if ($validator->fails()) {
+            return response_error([
+                'errors' => $validator->errors()
+            ]);
+        }
+
+        return $request;
+    }
+
 }
+
+
