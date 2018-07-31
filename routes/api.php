@@ -17,6 +17,9 @@
 Route::group([
     'prefix' => 'v1'
 ], function () {
+    Route::get('download-image', 'PostController@downloadImageFormPost');
+    Route::post('add-image', 'ImageController@addImageFromFolder');
+    Route::post('attach-image-post', 'ImageController@attachImagePost');
     Route::post('login', 'Auth\AuthController@login');
     Route::post('refresh', 'Auth\AuthController@refresh');
     Route::group(['middleware' => 'auth'], function () {

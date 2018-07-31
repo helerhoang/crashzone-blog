@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ConnectException;
 use Illuminate\Http\Request;
 use App\Models\Post;
 use Illuminate\Support\Facades\Validator;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class PostController extends Controller
 {
@@ -100,5 +104,61 @@ class PostController extends Controller
         return $post->delete()
             ? response_success(['post' => $post], 'deleted post id ' . $post->id)
             : response_error([], 'can not find post id ' . $post->id, 401);
+    }
+
+    /**
+     * download image from table post on field content
+     * api/v1/download-image | GET
+     */
+    public function downloadImageFormPost() {
+//        $contents =\Illuminate\Support\Facades\DB::table('wp_posts')->select('post_content','id')
+//            ->where('post_type','=','post')
+//            ->WhereNotNull('post_content')
+//            ->where('post_content','<>','')
+//            ->WhereNotNull('post_title')
+//            ->where('post_title','<>','')
+//            ->WhereNotNull('post_name')
+//            ->where('post_name','<>','')
+//            ->where('post_status','publish')
+//            ->where('ping_status','open')
+//            ->orderBy('id','desc')
+////            ->skip(159)
+//            ->take(81)
+//            ->get();
+
+            $contents = Post::select('id','content')->skip(0)->take(80)->get();
+//            dd($contents);
+        foreach($contents as $key =>  $content) {
+            $id_post = $content->id;
+            $url = getSrcImage($content);
+            try {
+                if ($url[$key] === "") {
+                    unset($url[$key]);
+                    continue;
+                }
+            }catch (\ErrorException $e){
+                continue;
+            }
+            try {
+                $nameSaved =$id_post . "_" . getNameImage($url);
+//                    $path = storage_path('app/public/old_images/' . $nameSaved);
+                $path = storage_path('app/public/images_of_content/' . $nameSaved);
+                $file_path = fopen($path, 'w');
+                $client = new Client();
+                if($client->head($url)) {
+                    $client->get($url, ['save_to' => $file_path]);
+                }
+
+            } catch (ClientException $e) {
+                continue;
+            }
+            catch (ConnectException $e) {
+                continue;
+            }
+            catch (NotFoundHttpException $e){
+                continue;
+            }
+
+        }
     }
 }
