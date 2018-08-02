@@ -141,41 +141,42 @@ class PostController extends Controller
      */
     public function downloadImageFormPost()
     {
-        $contents = Post::select('id', 'content')->skip(0)->take(80)->get();
-        foreach ($contents as $key => $content) {
-            $id_post = $content->id;
-            $url = getSrcImage($content);
-            try {
-                if ($url[$key] === "") {
-                    unset($url[$key]);
+        $count_content = Post::select('*')->count();
+        for ($i = 0; $i <= $count_content; $i++) {
+            $contents = Post::select('id', 'content')->skip($i)->take(1)->get();
+            foreach ($contents as $key => $content) {
+                $id_post = $content->id;
+                $url = getSrcImage($content);
+                try {
+                    if ($url[$key] === "") {
+                        unset($url[$key]);
+                        continue;
+                    }
+                } catch (\ErrorException $e) {
                     continue;
                 }
-            } catch (\ErrorException $e) {
-                continue;
-            }
-            try {
-                $nameSaved = $id_post . "_" . getNameImage($url);
+                try {
+                    $nameSaved = $id_post . "_" . getNameImage($url);
 
-                if (!file_exists(storage_path('app/public/images_of_content/'))) {
-                    mkdir(storage_path('app/public/images_of_content/'));
+                    if (!file_exists(storage_path('app/public/images_of_content/'))) {
+                        mkdir(storage_path('app/public/images_of_content/'));
+                    }
+
+                    $path = storage_path('app/public/images_of_content/' . $nameSaved);
+                    $file_path = fopen($path, 'w');
+
+                    $client = new Client();
+                    if ($client->head($url)) {
+                        $client->get($url, ['save_to' => $file_path]);
+                    }
+                } catch (ClientException $e) {
+                    continue;
+                } catch (ConnectException $e) {
+                    continue;
+                } catch (NotFoundHttpException $e) {
+                    continue;
                 }
-
-                $path = storage_path('app/public/images_of_content/' . $nameSaved);
-                $file_path = fopen($path, 'w');
-
-                $client = new Client();
-                if ($client->head($url)) {
-                    $client->get($url, ['save_to' => $file_path]);
-                }
-
-            } catch (ClientException $e) {
-                continue;
-            } catch (ConnectException $e) {
-                continue;
-            } catch (NotFoundHttpException $e) {
-                continue;
             }
-
         }
     }
 

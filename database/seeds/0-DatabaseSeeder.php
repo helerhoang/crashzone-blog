@@ -22,6 +22,8 @@ class DatabaseSeeder extends Seeder
         //     ArticleCategoryTableSeeder::class,
             ImagePostTableSeeder::class,
             MenusTableSeeder::class,
+            TagsTableSeeder::class,
+            PostTagTableSeeder::class
         ]);
     }
 }

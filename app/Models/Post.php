@@ -35,5 +35,10 @@ class Post extends Model
         return $this->belongsToMany(Image::class)->withTimestamps();
     }
 
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class)->withTimestamps();
+    }
+
 
 }
