@@ -20,11 +20,7 @@ class CategoryController extends Controller
         return response_success(['categories' => $categories]);
     }
 
-    public function indexDeleted()
-    {
-        $categories = Category::onlyTrashed()->get();
-        return response_success(['categories' => $categories]);
-    }
+
 
     /**
      * Store a newly created resource in storage.
@@ -85,12 +81,6 @@ class CategoryController extends Controller
         return response_success(['category' => $category]);
     }
 
-    public function restoreDeleted($id)
-    {
-        $category = Category::withTrashed()->find($id);
-        return $category->restore() ?
-            response_success(['category' => $category], 'retore deleted category id ' . $category->id) : response_error([], 'can not find category id ' . $category->id, 401);
-    }
 
     /**
      * Remove the specified resource from storage.
@@ -106,11 +96,29 @@ class CategoryController extends Controller
             : response_error([], 'can not find category id ' . $category->id, 401);
     }
 
+    /*
+     *  SOFT DELETE
+     */
+
+    public function indexDeleted()
+    {
+        $categories = Category::onlyTrashed()->get();
+        return response_success(['categories' => $categories]);
+    }
+
     public function destroyDeleted($id)
     {
         $category = Category::withTrashed()->find($id);
         return $category->forceDelete() ?
             response_success(['category' => $category], 'deleted permanently category id ' . $category->id) : response_error([], 'can not find category id ' . $category->id, 401);
+    }
+
+
+    public function restoreDeleted($id)
+    {
+        $category = Category::withTrashed()->find($id);
+        return $category->restore() ?
+            response_success(['category' => $category], 'retore deleted category id ' . $category->id) : response_error([], 'can not find category id ' . $category->id, 401);
     }
 
 
@@ -128,6 +136,8 @@ class CategoryController extends Controller
 
         return $request;
     }
+
+
 
 }
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -118,5 +119,64 @@ class ImageController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    /**
+     * add image from folder
+     * api/v1/add-image | Post
+     */
+
+    public function addImageFromFolder() {
+        $urls = getUrlImageFromFolder();
+        foreach($urls as $key => $url) {
+            $image = str_replace("/","",getNameImage($url));
+            $image_explode = explode(".",$image);
+            $nameImage = $image_explode[0];
+            $extension = $image_explode[1];
+            $mime_type = mime_content_type($url);
+            $name_slug = slugify($nameImage);
+            $existsImage = Image::where('slug', $name_slug)->first();
+
+            $slug = $existsImage ? $name_slug . '-duplicate-' . faker()->uuid : $name_slug;
+
+            $encoded_name = date('Ymd') . '-' . time() * 1000 . '-' . faker()->uuid() . '-' . $name_slug;
+
+            $imageSaved = Storage::disk('local')->putFileAs(imageDirectory(), new File($url), $encoded_name. '.'. $extension);
+
+            $imagePath = Storage::url($imageSaved);
+            $imageCreated[] = Image::create([
+                'name' => $nameImage,
+                'alt' => $name_slug,
+                'slug' => $slug,
+                'path' => $imagePath,
+                'extension' => $extension,
+                'mime_type' => $mime_type,
+                'size' => 1043
+            ]);
+
+//            \Illuminate\Support\Facades\Storage::delete((storage_path('app/public/images_of_content/' . $image)));
+
+        }
+
+//        dd($image);
+        return response_success([
+            'images' => $imageCreated
+        ]);
+
+    }
+
+    /**
+     * attach image post into table image_post
+     * api/v1/attach-image-post | Post
+     */
+
+    public function attachImagePost() {
+        $images = Image::select('id','name')->skip(1)->take(1389)->get();
+        foreach($images as $key => $image) {
+            $id_image = $image->id;
+            $id_post = getIdPostFromNameImage($image->name);
+            $posts =Post::find($id_post);
+            $posts->images()->attach($id_image);
+        }
     }
 }
