@@ -9,6 +9,9 @@ use Illuminate\Http\Request;
 use App\Models\Post;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use App\Models\User;
+use Mews\Purifier\Facades\Purifier;
+
 
 class PostController extends Controller
 {
@@ -35,23 +38,41 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        $postInfo = $request->only(['title', 'description', 'content']);
+
+        $images = $request->file('images');
+        $post = collect(json_decode($request->post));
+        $postInfo = $post->only(['title', 'description', 'content'])->toArray();
         $validator = Validator::make($postInfo, [
-            'title' => 'required|min:3|unique:posts',
+            'title' => 'required',
             'description' => 'required',
-            'content' => 'required'
+            'content' => 'required',
         ]);
 
         if ($validator->fails()) {
             return response_error(['errors' => $validator->errors()]);
         };
 
-        $title = trim($postInfo['title']);
-        $title_seo = str_replace(' ', '-', strtolower(friendlyString($title)));
-        $description = trim($postInfo['description']);
-        $content = trim($postInfo['content']);
+        $postTitle = trim($postInfo['title']);
+        $postTitleSlug = slugify($postTitle);
 
-        $newPost = Post::create(['title' => $title, 'title_seo' => $title_seo, 'description' => $description, 'content' => $content]);
+        $existsPost = Post::where('slug', $postTitleSlug)->first();
+        $postSlug = $existsPost ? $postTitleSlug . '-duplicate-' . faker()->uuid : $postTitleSlug;
+
+        $postDescription = trim($postInfo['description']);
+        $postContent = trim($postInfo['content']);
+        $postUserId = auth()->user()->id;
+
+        $newPost = Post::create(['title' => $postTitle, 'slug' => $postSlug, 'description' => $postDescription, 'content' => $postContent, 'user_id' => $postUserId]);
+        $imageSaved = [];
+        foreach ($images as $image) {
+            array_push($imageSaved, saveImage($image));
+        }
+
+        foreach ($imageSaved as $image) {
+            $image->posts()->attach($newPost->id);
+        }
+
+
 
         return response_success(['post' => $newPost]);
     }
@@ -130,56 +151,6 @@ class PostController extends Controller
         return $post->restore() ?
             response_success(['post' => $post], 'retore deleted post id ' . $post->id) : response_error([], 'can not find post id ' . $post->id, 401);
     }
-
-
-
-
-
-    /**
-     * download image from table post on field content
-     * api/v1/download-image | GET
-     */
-    public function downloadImageFormPost()
-    {
-        $count_content = Post::select('*')->count();
-        for ($i = 0; $i <= $count_content; $i++) {
-            $contents = Post::select('id', 'content')->skip($i)->take(1)->get();
-            foreach ($contents as $key => $content) {
-                $id_post = $content->id;
-                $url = getSrcImage($content);
-                try {
-                    if ($url[$key] === "") {
-                        unset($url[$key]);
-                        continue;
-                    }
-                } catch (\ErrorException $e) {
-                    continue;
-                }
-                try {
-                    $nameSaved = $id_post . "_" . getNameImage($url);
-
-                    if (!file_exists(storage_path('app/public/images_of_content/'))) {
-                        mkdir(storage_path('app/public/images_of_content/'));
-                    }
-
-                    $path = storage_path('app/public/images_of_content/' . $nameSaved);
-                    $file_path = fopen($path, 'w');
-
-                    $client = new Client();
-                    if ($client->head($url)) {
-                        $client->get($url, ['save_to' => $file_path]);
-                    }
-                } catch (ClientException $e) {
-                    continue;
-                } catch (ConnectException $e) {
-                    continue;
-                } catch (NotFoundHttpException $e) {
-                    continue;
-                }
-            }
-        }
-    }
-
 
 
 }

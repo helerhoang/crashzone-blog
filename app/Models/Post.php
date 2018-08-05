@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Mews\Purifier\Facades\Purifier;
 
 class Post extends Model
 {
@@ -16,6 +17,11 @@ class Post extends Model
     protected $hidden = [
         'deleted_at'
     ];
+
+    public function setContentAttribute($value)
+    {
+        return $this->attributes['content'] = Purifier::clean($value);
+    }
 
     public function categories()
     {

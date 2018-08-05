@@ -14,21 +14,21 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        $faker = Faker::create();
-        User::create([
-            'name' => 'nam',
-            'email' => 'nam@autointegrity.com.au',
-            'password' => bcrypt('123456')
-        ]);
+        // $faker = Faker::create();
+        // User::create([
+        //     'name' => 'nam',
+        //     'email' => 'nam@autointegrity.com.au',
+        //     'password' => bcrypt('123456')
+        // ]);
 
-        // foreach (range(0, 10) as $index) {
-        //     User::create([
-        //         'name' => $faker->name,
-        //         'email' => $faker->unique()->safeEmail,
-        //         'password' => bcrypt('123456')
-        //     ]);
+        foreach (range(0, 10) as $index) {
+            User::create([
+                'name' => faker()->name,
+                'email' => faker()->unique()->safeEmail,
+                'password' => bcrypt('123456')
+            ]);
 
-        // }
+        }
 
     }
 }

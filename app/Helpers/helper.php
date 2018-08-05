@@ -3,7 +3,8 @@
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Faker\Factory as Faker;
 use App\Models\Image;
-
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\File;
 
 
 const ARRAY_IMAGE = ['jpg', 'png'];
@@ -81,12 +82,12 @@ function friendlyString($string)
 
 function imageDirectory()
 {
-    $path = 'public/' . date('Ymd');
+    $path = 'public/images/' . date('Ymd');
 
     $imageDir = storage_path('app/') . $path;
 
     if (!file_exists($imageDir)) {
-        mkdir($imageDir);
+        Storage::makeDirectory($imageDir, 0777, true);
     }
 
     return $path;
@@ -121,37 +122,63 @@ function imageInformation($image)
     ]);
 }
 
-function getSrcImage($content) {
-   try {
-       $first_img = strpos($content->content, '<img ');
-       $last_img = strpos($content->content, '/>');
-       $img = substr($content->content, $first_img, $last_img - $first_img );
-       $src = substr($img, strpos($img, 'src'), strpos($img, 'alt') - strpos($img,'src'));
-       $src = stripslashes($src);
-       $path_img = substr($src, strpos($src, 'http'), stripos($src, ' ') - strpos($src, 'http'));
-       $path_img = str_replace('"','',$path_img);
-       return $path_img;
-   }catch (Exception $e){
-   }
+function getSrcImage($content)
+{
+    try {
+        $first_img = strpos($content->content, '<img ');
+        $last_img = strpos($content->content, '/>');
+        $img = substr($content->content, $first_img, $last_img - $first_img);
+        $src = substr($img, strpos($img, 'src'), strpos($img, 'alt') - strpos($img, 'src'));
+        $src = stripslashes($src);
+        $path_img = substr($src, strpos($src, 'http'), stripos($src, ' ') - strpos($src, 'http'));
+        $path_img = str_replace('"', '', $path_img);
+        return $path_img;
+    } catch (Exception $e) {
+    }
 }
 
-function getNameImage($img) {
-    preg_match('/[a-zA-z].*\//',$img,$path);
+function getNameImage($img)
+{
+    preg_match('/[a-zA-z].*\//', $img, $path);
     if (count($path[0])) {
-        $name = str_replace($path[0],"",$img);
+        $name = str_replace($path[0], "", $img);
     }
     return $name;
 }
 
-function getUrlImageFromFolder() {
+function getUrlImageFromFolder()
+{
     $directory = storage_path('app/public/images_of_content');
     $urls = glob($directory . "/*.{jpg,png,gif,JPG,PNG}", GLOB_BRACE);
     return $urls;
 }
 
-function getIdPostFromNameImage($name) {
-    $name_explode = explode("_",$name);
+function getIdPostFromNameImage($name)
+{
+    $name_explode = explode("_", $name);
     $id_post = $name_explode[0];
-//    dd($id_post);
     return $id_post;
+}
+
+function saveImage($file)
+{
+
+    $image = imageInformation($file);
+
+    $imageSaved = Storage::disk('local')->putFileAs(imageDirectory(), new File($file), $image['encoded_name'] . '.' . $image['extension']);
+
+    $imagePath = Storage::url($imageSaved);
+
+    $imageStored = Image::create([
+        'name' => $image['name'],
+        'alt' => $image['alt'],
+        'slug' => $image['slug'],
+        'path' => $imagePath,
+        'extension' => $image['extension'],
+        'mime_type' => $image['mime_type'],
+        'size' => $image['size']
+    ]);
+
+    return $imageStored;
+
 }

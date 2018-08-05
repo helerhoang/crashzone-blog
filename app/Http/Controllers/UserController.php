@@ -19,7 +19,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::excludeMe()->get();
+        $users = User::excludeMe()->with('roles')->get();
         return response_success([
             'users' => $users
         ]);
@@ -100,7 +100,31 @@ class UserController extends Controller
         return $user->delete()
             ? response_success(['user' => $user], 'deleted user id ' . $user->id)
             : response_error([], 'can not find user id ' . $user->id, 401);
+    }
 
 
+    /*
+     *  SOFT DELETE
+     */
+
+    public function indexDeleted()
+    {
+        $users = User::onlyTrashed()->get();
+        return response_success(['users' => $users]);
+    }
+
+    public function destroyDeleted($id)
+    {
+        $user = User::withTrashed()->find($id);
+        return $user->forceDelete() ?
+            response_success(['user' => $user], 'deleted permanently user id ' . $user->id) : response_error([], 'can not find user id ' . $user->id, 401);
+    }
+
+
+    public function restoreDeleted($id)
+    {
+        $user = User::withTrashed()->find($id);
+        return $user->restore() ?
+            response_success(['user' => $user], 'retore deleted user id ' . $user->id) : response_error([], 'can not find user id ' . $user->id, 401);
     }
 }

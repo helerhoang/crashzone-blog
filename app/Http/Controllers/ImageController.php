@@ -126,11 +126,12 @@ class ImageController extends Controller
      * api/v1/add-image | Post
      */
 
-    public function addImageFromFolder() {
+    public function addImageFromFolder()
+    {
         $urls = getUrlImageFromFolder();
-        foreach($urls as $key => $url) {
-            $image = str_replace("/","",getNameImage($url));
-            $image_explode = explode(".",$image);
+        foreach ($urls as $key => $url) {
+            $image = str_replace("/", "", getNameImage($url));
+            $image_explode = explode(".", $image);
             $nameImage = $image_explode[0];
             $extension = $image_explode[1];
             $mime_type = mime_content_type($url);
@@ -141,7 +142,7 @@ class ImageController extends Controller
 
             $encoded_name = date('Ymd') . '-' . time() * 1000 . '-' . faker()->uuid() . '-' . $name_slug;
 
-            $imageSaved = Storage::disk('local')->putFileAs(imageDirectory(), new File($url), $encoded_name. '.'. $extension);
+            $imageSaved = Storage::disk('local')->putFileAs(imageDirectory(), new File($url), $encoded_name . '.' . $extension);
 
             $imagePath = Storage::url($imageSaved);
             $imageCreated[] = Image::create([
@@ -170,13 +171,63 @@ class ImageController extends Controller
      * api/v1/attach-image-post | Post
      */
 
-    public function attachImagePost() {
-        $images = Image::select('id','name')->skip(1)->take(1389)->get();
-        foreach($images as $key => $image) {
+    public function attachImagePost()
+    {
+        $images = Image::select('id', 'name')->skip(1)->take(1389)->get();
+        foreach ($images as $key => $image) {
             $id_image = $image->id;
             $id_post = getIdPostFromNameImage($image->name);
-            $posts =Post::find($id_post);
+            $posts = Post::find($id_post);
             $posts->images()->attach($id_image);
         }
     }
+
+
+
+
+    /**
+     * download image from table post on field content
+     * api/v1/download-image | GET
+     */
+    public function downloadImageFormPost()
+    {
+        $count_content = Post::select('*')->count();
+        for ($i = 0; $i <= $count_content; $i++) {
+            $contents = Post::select('id', 'content')->skip($i)->take(1)->get();
+            foreach ($contents as $key => $content) {
+                $id_post = $content->id;
+                $url = getSrcImage($content);
+                try {
+                    if ($url[$key] === "") {
+                        unset($url[$key]);
+                        continue;
+                    }
+                } catch (\ErrorException $e) {
+                    continue;
+                }
+                try {
+                    $nameSaved = $id_post . "_" . getNameImage($url);
+
+                    if (!file_exists(storage_path('app/public/images_of_content/'))) {
+                        mkdir(storage_path('app/public/images_of_content/'));
+                    }
+
+                    $path = storage_path('app/public/images_of_content/' . $nameSaved);
+                    $file_path = fopen($path, 'w');
+
+                    $client = new Client();
+                    if ($client->head($url)) {
+                        $client->get($url, ['save_to' => $file_path]);
+                    }
+                } catch (ClientException $e) {
+                    continue;
+                } catch (ConnectException $e) {
+                    continue;
+                } catch (NotFoundHttpException $e) {
+                    continue;
+                }
+            }
+        }
+    }
+
 }
