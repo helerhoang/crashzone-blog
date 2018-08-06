@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
@@ -100,10 +101,22 @@ class PostController extends Controller
      */
     public function show($slug)
     {
-        //
-        $post = Post::with('author', 'categories')->where('slug', $slug)->first();
 
-        return response_success(['post' => $post]);
+        $post = Post::with('images', 'author', 'categories')->where('slug', $slug)->first();
+
+        $cate_id = $post->categories->modelKeys();
+        $related_posts = Post::with('images', 'author', 'categories')
+            ->whereHas('categories', function ($query) use ($cate_id) {
+                $query->whereIn('categories.id', $cate_id);
+            })
+            ->orderByDesc('reputation')
+            ->where('id', '<>', $post->id)
+            ->take(4)
+            ->get();
+        return response_success([
+            'post' => $post,
+            'related_posts' => $related_posts
+        ]);
     }
 
     /**
