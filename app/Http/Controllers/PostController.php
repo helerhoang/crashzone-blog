@@ -25,7 +25,7 @@ class PostController extends Controller
     {
         $take = 5;
         $offset = 0;
-        $posts = Post::with('author', 'images')->latest()->take(20)->offset($offset)->get();
+        $posts = Post::with('author', 'images', 'categories')->latest()->take(20)->offset($offset)->get();
 
         return response_success(['posts' => $posts]);
     }
@@ -76,11 +76,14 @@ class PostController extends Controller
             $image->posts()->attach($newPost->id);
         }
 
-        if (array_has($post, 'categories')) {
+        if (count($post['categories'])) {
             $categories = collect($post['categories']);
             $categories->each(function ($category) use ($newPost) {
                 Category::find($category)->posts()->attach($newPost->id);
             });
+        } else {
+
+            Category::where('name', 'uncategorized')->first()->posts()->attach($newPost->id);
         }
 
 
@@ -98,7 +101,7 @@ class PostController extends Controller
     public function show($slug)
     {
         //
-        $post = Post::where('slug', $slug)->first();
+        $post = Post::with('author', 'categories')->where('slug', $slug)->first();
 
         return response_success(['post' => $post]);
     }
@@ -163,6 +166,5 @@ class PostController extends Controller
         return $post->restore() ?
             response_success(['post' => $post], 'retore deleted post id ' . $post->id) : response_error([], 'can not find post id ' . $post->id, 401);
     }
-
 
 }
