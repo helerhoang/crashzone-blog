@@ -53,6 +53,7 @@ Route::group([
             'store'
         ]]);
     });
+    Route::get('posts-related', 'PostController@relatedPost')->name('posts.related');
     Route::get('posts-deleted', 'PostController@indexDeleted')->name('posts.indexDeleted');
     Route::delete('posts-deleted/{id}', 'PostController@destroyDeleted')->name('posts.destroyDeleted');
     Route::put('posts-deleted/{id}', 'PostController@restoreDeleted')->name('posts.restoreDeleted');

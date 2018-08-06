@@ -24,7 +24,7 @@ class PostController extends Controller
     {
         $take = 5;
         $offset = 0;
-        $posts = Post::with('author', 'images')->latest()->take(20)->offset($offset)->get();
+        $posts = Post::with('author', 'images','categories')->latest()->take(20)->offset($offset)->get();
 
         return response_success(['posts' => $posts]);
     }
@@ -151,6 +151,5 @@ class PostController extends Controller
         return $post->restore() ?
             response_success(['post' => $post], 'retore deleted post id ' . $post->id) : response_error([], 'can not find post id ' . $post->id, 401);
     }
-
 
 }

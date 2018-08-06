@@ -15,12 +15,12 @@ class Category extends Model
     protected $hidden = [];
 
     protected $fillable = [
-        'name'
+        'name','id'
     ];
 
     public function articles()
     {
-        return $this->belongsToMany(Article::class)->withTimestamps();
+        return $this->belongsToMany(Post::class)->withTimestamps()->select('title','slug','description','content');
     }
 
     public function subCategories()
