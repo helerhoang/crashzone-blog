@@ -15,10 +15,10 @@ class Category extends Model
     protected $hidden = [];
 
     protected $fillable = [
-        'name','id'
+        'name'
     ];
 
-    public function articles()
+    public function posts()
     {
         return $this->belongsToMany(Post::class)->withTimestamps()->select('title','slug','description','content');
     }
