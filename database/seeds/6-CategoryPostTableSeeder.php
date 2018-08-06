@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Models\Article;
+use App\Models\Post;
 use App\Models\Category;
 
 class CategoryPostTableSeeder extends Seeder
@@ -13,10 +13,10 @@ class CategoryPostTableSeeder extends Seeder
      */
     public function run()
     {
-        $articles = Article::all();
-        Category::find(range(6, 10))->each(function ($categories) use ($articles) {
-            $categories->articles()->attach(
-                $articles->random(rand(1, 5))->pluck('id')
+        $posts = Post::all();
+        Category::all()->each(function ($categories) use ($posts) {
+            $categories->posts()->attach(
+                $posts->random(rand(1, 5))->pluck('id')
             );
         });
     }

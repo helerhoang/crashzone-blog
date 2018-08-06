@@ -18,9 +18,9 @@ class Category extends Model
         'name'
     ];
 
-    public function articles()
+    public function posts()
     {
-        return $this->belongsToMany(Article::class)->withTimestamps();
+        return $this->belongsToMany(Post::class)->withTimestamps();
     }
 
     public function subCategories()

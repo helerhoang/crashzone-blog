@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Models\User;
 use Mews\Purifier\Facades\Purifier;
+use App\Models\Category;
 
 
 class PostController extends Controller
@@ -39,8 +40,10 @@ class PostController extends Controller
     public function store(Request $request)
     {
 
+
         $images = $request->file('images');
         $post = collect(json_decode($request->post));
+
         $postInfo = $post->only(['title', 'description', 'content'])->toArray();
         $validator = Validator::make($postInfo, [
             'title' => 'required',
@@ -64,6 +67,7 @@ class PostController extends Controller
 
         $newPost = Post::create(['title' => $postTitle, 'slug' => $postSlug, 'description' => $postDescription, 'content' => $postContent, 'user_id' => $postUserId]);
         $imageSaved = [];
+
         foreach ($images as $image) {
             array_push($imageSaved, saveImage($image));
         }
@@ -71,6 +75,14 @@ class PostController extends Controller
         foreach ($imageSaved as $image) {
             $image->posts()->attach($newPost->id);
         }
+
+        if (array_has($post, 'categories')) {
+            $categories = collect($post['categories']);
+            $categories->each(function ($category) use ($newPost) {
+                Category::find($category)->posts()->attach($newPost->id);
+            });
+        }
+
 
 
 

@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Comment extends Model
 {
-    protected  $table = 'comments';
+    protected $table = 'comments';
 
-    public function article()
+    public function post()
     {
-        return $this->belongsTo(Article::class);
+        return $this->belongsTo(Post::class);
     }
 
     public function user()
