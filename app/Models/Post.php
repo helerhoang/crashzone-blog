@@ -23,6 +23,7 @@ class Post extends Model
         return $this->attributes['content'] = Purifier::clean($value);
     }
 
+
     public function categories()
     {
         return $this->belongsToMany(Category::class)->withCount('posts');

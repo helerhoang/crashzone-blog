@@ -17,9 +17,9 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($offset = OFFSETT, $limit = LIMIT)
     {
-        $users = User::excludeMe()->with('roles')->get();
+        $users = User::excludeMe()->with('roles')->latest()->offset($offset)->limit($limit)->get();
         return response_success([
             'users' => $users
         ]);
@@ -73,10 +73,10 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
 
-        $userInfo = $request->only(['name', 'password']);
+        $userInfo = $request->only(['name']);
         $validator = Validator::make($userInfo, [
             'name' => 'required|min:3',
-            'password' => 'min:5'
+
         ]);
 
         if ($validator->fails()) {
@@ -84,7 +84,7 @@ class UserController extends Controller
         };
 
 
-        $user->update(['name' => $userInfo['name'], 'password' => bcrypt($userInfo['password'])]);
+        $user->update(['name' => $userInfo['name']]);
 
         return response_success(['user' => $user]);
     }

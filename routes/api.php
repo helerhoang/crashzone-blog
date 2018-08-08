@@ -46,7 +46,7 @@ Route::group([
      *  POST
      */
     Route::apiResource('posts', 'PostController', ['only', [
-        'index'
+        'index', 'show'
     ]]);
     Route::group(['middleware' => 'auth'], function () {
         Route::apiResource('posts', 'PostController', ['only', [

@@ -22,13 +22,19 @@ class PostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $take = 5;
-        $offset = 0;
-        $posts = Post::with('author', 'images', 'categories')->latest()->take(20)->offset($offset)->get();
 
-        return response_success(['posts' => $posts]);
+        if (empty($request->category)) {
+            $take = 5;
+            $offset = 0;
+            $posts = Post::with('author', 'images', 'categories')->latest()->take(20)->offset($offset)->get();
+
+            return response_success(['posts' => $posts]);
+        } else {
+            dd($request->category);
+            //TODO TOMORROW
+        }
     }
 
 
@@ -102,7 +108,9 @@ class PostController extends Controller
     {
 
         $post = Post::with('images', 'author', 'categories')->where('slug', $slug)->first();
-
+        $post->view = $post->view + 1;
+        $post->reputation = $post->view;
+        $post->save();
         $cate_id = $post->categories->modelKeys();
         $related_posts = Post::with('images', 'author', 'categories')
             ->whereHas('categories', function ($query) use ($cate_id) {
@@ -112,6 +120,7 @@ class PostController extends Controller
             ->where('id', '<>', $post->id)
             ->take(4)
             ->get();
+
         return response_success([
             'post' => $post,
             'related_posts' => $related_posts

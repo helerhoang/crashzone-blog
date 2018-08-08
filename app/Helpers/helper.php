@@ -8,7 +8,8 @@ use Illuminate\Http\File;
 
 
 const ARRAY_IMAGE = ['jpg', 'png'];
-
+const OFFSETT = 0;
+const LIMIT = 20;
 
 function response_success($data = [], $msg = 'everything is ok', $status = 200, $note = 'custom response success')
 {
