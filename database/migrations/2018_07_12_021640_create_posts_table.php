@@ -20,6 +20,9 @@ class CreatePostsTable extends Migration
             $table->text('description')->nullable();
             $table->longText('content');
             $table->integer('user_id')->default(1);
+            $table->string('status')->default('draft');
+            $table->string('comment_status')->default('open');
+            $table->string('old_guid')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

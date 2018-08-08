@@ -15,7 +15,7 @@ class CreateCategoryPostTable extends Migration
     {
         Schema::create('category_post', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('category_id')->unsigned()->references('categories');
+            $table->integer('category_id')->unsigned()->references('categories')->default(1);
             $table->integer('post_id')->unsigned()->references('categories');
             $table->timestamps();
             $table->softDeletes();
@@ -33,6 +33,6 @@ class CreateCategoryPostTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('post_category');
+        Schema::dropIfExists('category_post');
     }
 }

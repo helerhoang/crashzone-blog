@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Models\User;
 use Mews\Purifier\Facades\Purifier;
-use App\Models\Category;
+
 
 
 class PostController extends Controller
@@ -40,7 +40,6 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-
 
         $images = $request->file('images');
         $post = collect(json_decode($request->post));
