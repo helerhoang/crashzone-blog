@@ -22,18 +22,23 @@ class PostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request, $offset = OFFSETT, $limit = LIMIT)
     {
 
         if (empty($request->category)) {
             $take = 5;
             $offset = 0;
-            $posts = Post::with('author', 'images', 'categories')->latest()->take(20)->offset($offset)->get();
+            $posts = Post::with('author', 'images', 'categories')->latest()->offset($offset)->limit($limit)->get();
 
             return response_success(['posts' => $posts]);
         } else {
-            dd($request->category);
-            //TODO TOMORROW
+            $category = $request->category;
+
+            $posts = Category::where('slug', $category)->first()->posts()->latest()->with('author', 'images', 'categories')->offset($offset)->limit($limit)->get();
+
+
+
+            return response_success(['posts' => $posts]);
         }
     }
 

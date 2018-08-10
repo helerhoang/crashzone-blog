@@ -22,7 +22,7 @@ class Category extends Model
 
     public function posts()
     {
-        return $this->belongsToMany(Post::class)->withTimestamps()->select('title', 'slug', 'description', 'content');
+        return $this->belongsToMany(Post::class)->withTimestamps();
     }
 
     public function subCategories()

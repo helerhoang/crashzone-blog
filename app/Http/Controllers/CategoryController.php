@@ -15,7 +15,11 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::with('subCategories', 'posts')->withCount('posts')->parentIdIsNull()->get();
+        $categories = Category::with('posts')->withCount('posts')->get();
+
+        $categories = $categories->filter(function ($value, $key) {
+            return $value['posts_count'] > 0;
+        });
 
         return response_success(['categories' => $categories]);
     }
