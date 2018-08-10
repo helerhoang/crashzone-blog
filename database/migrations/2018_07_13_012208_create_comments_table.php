@@ -20,9 +20,7 @@ class CreateCommentsTable extends Migration
             $table->integer('post_id')->unsigned()->references('posts');
             $table->timestamps();
             $table->softDeletes();
-            $table->unique([
-                'user_id', 'post_id'
-            ]);
+
         });
     }
 

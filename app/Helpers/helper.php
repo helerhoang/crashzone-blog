@@ -137,21 +137,60 @@ function getSrcImage($content)
     }
 }
 
-function getNameImage($img)
+function getImage($img)
 {
     preg_match('/[a-zA-z].*\//', $img, $path);
     if (count($path[0])) {
-        $name = str_replace($path[0], "", $img);
+        $image = str_replace($path[0], "", $img);
     }
+    return $image;
+}
+
+function formatCreatedAt($datetime) {
+    $datetime = explode(' ', $datetime);
+    try{
+        $date = str_replace("-",'',$datetime[0]);
+        $time = str_replace(":", '', $datetime[1]);
+        return collect([
+            'date' => $date,
+            'time' => $time
+        ]);
+    }catch(Exception $e){}
+}
+
+function decodeNameImageFromFolder($nameImage) {
+    $nameImage = explode("_", $nameImage);
+    try{
+        $name = $nameImage[2];
+    }catch (Exception $e){}
+
     return $name;
 }
 
-function getUrlImageFromFolder()
+function getInformationImage($img)
 {
-    $directory = storage_path('app/public/images_of_content');
+    preg_match('/[a-zA-z].*\//', $img, $path);
+    if (count($path[0])) {
+        $image = str_replace($path[0], "", $img);
+        $image = explode(".", $image);
+        try {
+            $name = $image[0];
+            $extension = $image[1];
+        }catch (Exception $e) {}
+    }
+    return collect([
+        'name' => $name,
+        'extension' => $extension
+    ]);
+}
+
+function getUrlImageFromFolder($folder)
+{
+    $directory = storage_path('app/public/posts/'. $folder);
     $urls = glob($directory . "/*.{jpg,png,gif,JPG,PNG}", GLOB_BRACE);
     return $urls;
 }
+
 
 function getIdPostFromNameImage($name)
 {

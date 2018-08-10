@@ -20,7 +20,7 @@ Route::group([
     Route::group(['middleware' => 'auth'], function () {
         Route::post('me', 'Auth\AuthController@me')->name('auth.me');
         Route::post('logout', 'Auth\AuthController@logout')->name('auth.logout');
-        Route::get('download-image', 'PostController@downloadImageFormPost')->name('backup.download-image');
+        Route::get('download-image', 'ImageController@downloadImageFormPost')->name('backup.download-image');
         Route::post('add-image', 'ImageController@addImageFromFolder')->name('backup.add-image');
         Route::post('attach-image-post', 'ImageController@attachImagePost')->name('backup.attach-image-post');
     });
